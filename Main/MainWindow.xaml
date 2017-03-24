@@ -1,0 +1,33 @@
+﻿<Window x:Class="FloatingPointTextBox.Main.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:b360="clr-namespace:Bridge360"
+        xmlns:local="clr-namespace:FloatingPointTextBox.Main"
+        mc:Ignorable="d"
+        Title="Floating Point Text Box Example" Height="224.241" Width="392.268">
+    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+        <StackPanel Orientation="Horizontal">
+            <Label Content="TextBox" FontSize="16" Width="175" Margin="4,10"
+                   HorizontalContentAlignment="Right"/>
+            <TextBox x:Name="TextBox"
+                     FontSize="16" Width="85" Margin="4,10"
+                     VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                     Text="{Binding TextBoxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                            StringFormat=F2}"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Content="FloatingPointTextBox" FontSize="16" Width="175" Margin="4,10"
+                   HorizontalContentAlignment="Right"/>
+            <b360:FloatingPointTextBox x:Name="FloatingPointTextBox"
+                                       FontSize="16" Width="85" Margin="4,10"
+                                       VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                                       Text="{Binding FloatTextBoxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                              StringFormat=F2}"/>
+        </StackPanel>
+
+    </StackPanel>
+</Window>
