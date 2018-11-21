@@ -1,4 +1,4 @@
-﻿// FloatingPointTextBox
+// FloatingPointTextBox
 //
 //   Author: Ken Walker, Bridge360 (http://bridge360.com)
 
@@ -33,16 +33,27 @@ namespace Bridge360
         {
             Loaded += TextBox_Loaded;
         }
+        /// <summary>
+        /// Load decimal separator from current UI context.
+        /// </summary>
+        static FloatingPointTextBox()
+        {
+            DecimalSeparator = '.';
+
+            string decimalSeparatorString = System.Threading.Thread.CurrentThread.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
+            if (decimalSeparatorString.Length == 1)
+                DecimalSeparator = decimalSeparatorString[0];
+        }
 
         protected bool IsManagingInput { get; set; }
         protected bool RequireNegativeHandling { get; set; }
         protected bool NegativeIntegerPending { get; set; }
         protected bool NegativeFractionPending { get; set; }
+        protected static char DecimalSeparator { get; set; }
 
         protected void TextBox_Loaded(object sender, RoutedEventArgs e)
         {
             // If the StringFormat indicates a floating-point number, we'll perform our special tricks
-
             IsManagingInput = false;
 
             var binding = BindingOperations.GetBindingBase(this, TextBox.TextProperty);
@@ -82,7 +93,7 @@ namespace Bridge360
 
                         for (int i = 1; i < stringFormat.Length; i++)
                         {
-                            if (stringFormat[i] == '.')
+                            if (stringFormat[i] == DecimalSeparator)
                             {
                                 foundDecimalPoint = true;
                             }
@@ -105,7 +116,7 @@ namespace Bridge360
                             IsManagingInput = true;
 
                             // This type of format string needs extra help with negative numbers
-                            if (stringFormat[stringFormat.Length - 1] != '.')
+                            if (stringFormat[stringFormat.Length - 1] != DecimalSeparator)
                             {
                                 RequireNegativeHandling = true;
                             }
@@ -128,14 +139,14 @@ namespace Bridge360
                     case Key.OemPeriod:
                     case Key.Decimal:
                         // If the user typed a period and we're to the left of the decimal point, skip over the decimal point
-                        if (CaretIndex < Text.Length && Text[CaretIndex] == '.')
+                        if (CaretIndex < Text.Length && Text[CaretIndex] == DecimalSeparator)
                         {
                             CaretIndex++;
                             e.Handled = true;
                         }
                         // Or if there is already a decimal point, don't add a second one
                         // (If user is replacing the part that includes the decimal point, accept it)
-                        else if (Text.Contains(".") && !SelectedText.Contains("."))
+                        else if (Text.Contains(DecimalSeparator.ToString()) && !SelectedText.Contains(DecimalSeparator.ToString()))
                         {
                             e.Handled = true;
                         }
@@ -143,7 +154,7 @@ namespace Bridge360
 
                     case Key.Back:
                         // If the user pressed Backspace and we're to the right of the only decimal point, skip over the decimal point
-                        if (CaretIndex > 0 && CaretIndex <= Text.Length && Text[CaretIndex - 1] == '.' && Text.HasOnlyOne('.'))
+                        if (CaretIndex > 0 && CaretIndex <= Text.Length && Text[CaretIndex - 1] == DecimalSeparator && Text.HasOnlyOne(DecimalSeparator))
                         {
                             CaretIndex--;
                             e.Handled = true;
@@ -152,7 +163,7 @@ namespace Bridge360
 
                     case Key.Delete:
                         // If the user pressed Delete and we're to the left of the only decimal point, skip over the decimal point
-                        if (CaretIndex < Text.Length && Text[CaretIndex] == '.' && Text.HasOnlyOne('.'))
+                        if (CaretIndex < Text.Length && Text[CaretIndex] == DecimalSeparator && Text.HasOnlyOne(DecimalSeparator))
                         {
                             CaretIndex++;
                             e.Handled = true;
@@ -217,7 +228,7 @@ namespace Bridge360
             base.OnTextChanged(e);
 
             // If we've determined this negative number requires caret adjustment, adjust it
-            int decimalIndex = Text.IndexOf('.');
+            int decimalIndex = Text.IndexOf(DecimalSeparator);
             if (NegativeIntegerPending && decimalIndex > -1)
             {
                 CaretIndex = decimalIndex;
