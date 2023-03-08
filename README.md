@@ -4,8 +4,7 @@ A WPF text box control that behaves better when bound to a floating point proper
 
 On my first WPF project, I noticed a lot of challenges users had entering
 floating point numbers into the standard `TextBox` control. So we developed a
-subclass that manages the behavior better. See
-[this article](https://bridge360blog.com/2017/03/13/binding-a-floating-point-property-to-a-textbox-with-a-stringformat-in-wpf/)
+subclass that manages the behavior better. See Article-FloatingPointTextBox.pdf
 for more information.
 
 ## Dependencies
